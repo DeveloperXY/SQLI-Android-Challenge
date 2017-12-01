@@ -17,7 +17,8 @@ import com.developerxy.sqli_test.retrofit.models.QLGitHubRepository;
 import com.developerxy.sqli_test.ui.fragments.RepositoriesListFragment;
 import com.developerxy.sqli_test.ui.fragments.RepositoryDetailsFragment;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener,
+        RepositoriesListFragment.ReposListFragmentListener {
 
     private SearchView searchView;
 
@@ -82,5 +83,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         ft.replace(R.id.frame_container, fragment, "fragment" + position);
         ft.commit();
+    }
+
+    @Override
+    public void onRepositorySelected(QLGitHubRepository repository) {
+        displayFragment(1, repository);
     }
 }

@@ -15,6 +15,8 @@ import java.util.List;
 
 public class RepositoryAdapter extends BaseSearchAdapter<RepositoryAdapter.ViewHolder, QLGitHubRepository> {
 
+    private onRepositorySelectedListener onRepositorySelectedListener;
+
     public RepositoryAdapter(Context context, List<QLGitHubRepository> items) {
         super(context, items);
     }
@@ -36,11 +38,30 @@ public class RepositoryAdapter extends BaseSearchAdapter<RepositoryAdapter.ViewH
         public ViewHolder(View itemView) {
             super(itemView);
             repositoryName = itemView.findViewById(R.id.repo_name);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onRepositorySelectedListener != null)
+                        onRepositorySelectedListener.onRepositorySelected(mItems.get(getAdapterPosition()));
+                }
+            });
         }
 
         @Override
         public void bind(QLGitHubRepository repository) {
             repositoryName.setText(repository.getName());
         }
+    }
+
+    public void setOnRepositorySelectedListener(RepositoryAdapter.onRepositorySelectedListener onRepositorySelectedListener) {
+        this.onRepositorySelectedListener = onRepositorySelectedListener;
+    }
+
+    /**
+     * A listener that notifies the host fragment if a repository was selected.
+     */
+    public interface onRepositorySelectedListener {
+        void onRepositorySelected(QLGitHubRepository repository);
     }
 }

@@ -1,6 +1,7 @@
 package com.developerxy.sqli_test.ui.fragments;
 
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -29,10 +30,12 @@ import java.util.List;
 
 import retrofit2.Call;
 
-public class RepositoriesListFragment extends Fragment implements OnRepositoriesLoadedListener {
+public class RepositoriesListFragment extends Fragment implements OnRepositoriesLoadedListener,
+        RepositoryAdapter.onRepositorySelectedListener {
 
     private List<QLGitHubRepository> repositories;
     private RepositoryAdapter mRepositoryAdapter;
+    private ReposListFragmentListener reposListFragmentListener;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
@@ -134,6 +137,7 @@ public class RepositoriesListFragment extends Fragment implements OnRepositories
     private void populateRecyclerView() {
         if (mRepositoryAdapter == null) {
             mRepositoryAdapter = new RepositoryAdapter(getActivity(), repositories);
+            mRepositoryAdapter.setOnRepositorySelectedListener(this);
             mRecyclerView.setAdapter(mRepositoryAdapter);
         } else
             mRepositoryAdapter.animateTo(repositories);
@@ -174,5 +178,40 @@ public class RepositoriesListFragment extends Fragment implements OnRepositories
         mRepositoryAdapter.animateTo(filteredRepos);
         mRecyclerView.scrollToPosition(0);
         return true;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            reposListFragmentListener = (ReposListFragmentListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement ReposListFragmentListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        reposListFragmentListener = null;
+    }
+
+    /**
+     * This method is invoked when a repository is selected off the list of repositories.
+     * @param repository that was pressed
+     */
+    @Override
+    public void onRepositorySelected(QLGitHubRepository repository) {
+        // Notify the activity
+        reposListFragmentListener.onRepositorySelected(repository);
+    }
+
+
+    /**
+     * A listener that notifies the host activity if a repository was selected from the fragment's RecyclerView.
+     */
+    public interface ReposListFragmentListener {
+        void onRepositorySelected(QLGitHubRepository repository);
     }
 }
