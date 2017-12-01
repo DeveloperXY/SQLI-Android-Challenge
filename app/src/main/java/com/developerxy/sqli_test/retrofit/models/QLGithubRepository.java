@@ -1,5 +1,8 @@
 package com.developerxy.sqli_test.retrofit.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Mohammed Aouf ZOUAG on 12/1/2017.
  */
@@ -86,6 +89,23 @@ public class QLGithubRepository {
                     "name='" + name + '\'' +
                     '}';
         }
+    }
+
+    /**
+     * @param repositories to be filtered
+     * @param query the query's text to be used for filtering
+     * @return the list of GitHub repositories whose names contain the given query text.
+     */
+    public static List<QLGithubRepository> filter(List<QLGithubRepository> repositories, String query) {
+        List<QLGithubRepository> toFilterRepos = new ArrayList<>(repositories);
+        List<QLGithubRepository> filteredRepos = new ArrayList<>();
+        for (int i = 0; i < toFilterRepos.size(); i++) {
+            QLGithubRepository repository = toFilterRepos.get(i);
+            if (repository.getName().toLowerCase().contains(query.toLowerCase()))
+                filteredRepos.add(repository);
+        }
+
+        return filteredRepos;
     }
 
     @Override

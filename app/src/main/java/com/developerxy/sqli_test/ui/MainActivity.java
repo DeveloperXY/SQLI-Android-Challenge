@@ -2,12 +2,16 @@ package com.developerxy.sqli_test.ui;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.developerxy.sqli_test.R;
@@ -25,11 +29,14 @@ import java.util.List;
 
 import retrofit2.Call;
 
-public class MainActivity extends AppCompatActivity implements OnRepositoriesLoadedListener {
+public class MainActivity extends AppCompatActivity implements OnRepositoriesLoadedListener,
+        SearchView.OnQueryTextListener {
 
+    private List<QLGithubRepository> repositories;
     private RepositoryAdapter mRepositoryAdapter;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private SearchView searchView;
     protected RecyclerView mRecyclerView;
 
     @Override
@@ -39,10 +46,27 @@ public class MainActivity extends AppCompatActivity implements OnRepositoriesLoa
         RetrofitCallBuilder.init(((GraphQLApplication) getApplication()));
 
         initializeUI(); // required UI setup
-        setupRefreshListener(); // configure the behavior of the SwipeRefreshLayout
         setupRecyclerView(); // setup the activity's recyclerview
+        setupRefreshListener(); // configure the behavior of the SwipeRefreshLayout
         // start fetching repositories asynchronously using the Retrofit GraphQLClient that was setup
         fetchRepostories(this); // Fetch repositories & notify the activity when finished
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        final MenuItem item = menu.findItem(R.id.action_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(this);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!searchView.isIconified())
+            searchView.setIconified(true);
+        else
+            super.onBackPressed();
     }
 
     private void fetchRepostories(OnRepositoriesLoadedListener listener) {
@@ -78,10 +102,9 @@ public class MainActivity extends AppCompatActivity implements OnRepositoriesLoa
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
-    private void populateRecyclerView(List<QLGithubRepository> repositories) {
+    private void populateRecyclerView() {
         if (mRepositoryAdapter == null) {
             mRepositoryAdapter = new RepositoryAdapter(this, repositories);
-            mRepositoryAdapter.setHasStableIds(true);
             mRecyclerView.setAdapter(mRepositoryAdapter);
         } else
             mRepositoryAdapter.animateTo(repositories);
@@ -97,12 +120,26 @@ public class MainActivity extends AppCompatActivity implements OnRepositoriesLoa
 
     @Override
     public void onLoadSucceeded(List<QLGithubRepository> repositories) {
+        this.repositories = repositories;
         mSwipeRefreshLayout.setRefreshing(false);
-        populateRecyclerView(repositories);
+        populateRecyclerView();
     }
 
     @Override
     public void onLoadFailed(String errorMessage) {
         Toast.makeText(MainActivity.this, "Loading failed: " + errorMessage, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        final List<QLGithubRepository> filteredRepos = QLGithubRepository.filter(repositories, query);
+        mRepositoryAdapter.animateTo(filteredRepos);
+        mRecyclerView.scrollToPosition(0);
+        return true;
     }
 }
