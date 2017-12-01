@@ -1,5 +1,7 @@
 package com.developerxy.sqli_test.retrofit;
 
+import android.content.Context;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -14,11 +16,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Mohammed Aouf ZOUAG on 01/12/2017.
  */
 public class ServiceGenerator {
-    /**
-     * The personal GitHub Access Token used to access the Github API.
-     * Usually this token value should be stored within a local properties file...
-     */
-    private static final String GITHUB_TOKEN = "d36f3deee079e8b2fa38d9b6451374ef49056a37";
 
     private static final String BASE_URL = "https://api.github.com/";
     private static Retrofit.Builder builder = new Retrofit.Builder()
@@ -29,7 +26,7 @@ public class ServiceGenerator {
             .setLevel(HttpLoggingInterceptor.Level.BODY);
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
-    public static <S> S createService(Class<S> serviceClass) {
+    public static <S> S createService(Class<S> serviceClass, final String token) {
         if (!httpClient.interceptors().contains(logging)) {
             httpClient.addInterceptor(logging);
 
@@ -41,7 +38,7 @@ public class ServiceGenerator {
                     Request original = chain.request();
 
                     Request request = original.newBuilder()
-                            .header("Authorization", "token " + GITHUB_TOKEN)
+                            .header("Authorization", "token " + token)
                             .header("Content-Type", "application/json")
                             .method(original.method(), original.body())
                             .build();

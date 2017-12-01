@@ -2,8 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'
 
 android {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
     compileSdkVersion 26
     defaultConfig {
+        resValue "string", "github_token", properties.getProperty("github_token", "Error: You need to create a new property within " +
+                "the local.properties file with the name \"github_token\" & set its value to a Personal Access Token from your Github account.")
         applicationId "com.developerxy.sqli_test"
         minSdkVersion 19
         targetSdkVersion 26

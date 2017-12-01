@@ -32,7 +32,10 @@ public class MainActivity extends AppCompatActivity {
         QLQuery qlQuery = new QLQuery(query);
         System.out.println(qlQuery);
 
-        GraphQLClient client = ServiceGenerator.createService(GraphQLClient.class);
+        String access_token = getResources().getString(R.string.github_token);
+        Log.e("GitHub Personal Token", access_token);
+
+        GraphQLClient client = ServiceGenerator.createService(GraphQLClient.class, access_token);
         client.getAllRepositories(qlQuery)
                 .enqueue(new Callback<QLGithubResponse>() {
                     @Override
