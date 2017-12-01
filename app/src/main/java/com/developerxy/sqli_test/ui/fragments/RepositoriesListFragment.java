@@ -12,7 +12,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -37,7 +36,9 @@ public class RepositoriesListFragment extends Fragment implements OnRepositories
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
-    private TextView emptyView;
+    /**
+     * Switches between the RecyclerView & an empty view to be displayed in case the repositories' list was empty.
+     */
     private ViewSwitcher viewSwitcher;
 
     public RepositoriesListFragment() {
@@ -90,7 +91,6 @@ public class RepositoriesListFragment extends Fragment implements OnRepositories
     private void initializeUI(View rootView) {
         mSwipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh);
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
-        emptyView = rootView.findViewById(R.id.empty_view);
         viewSwitcher = rootView.findViewById(R.id.switcher);
     }
 

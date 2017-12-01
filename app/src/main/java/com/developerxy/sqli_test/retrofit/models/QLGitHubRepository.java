@@ -1,12 +1,15 @@
 package com.developerxy.sqli_test.retrofit.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A class among the hierarchy of classes required by Retrofit to automatically convert a JSON response to a QLGitHubResponse object.
  */
-public class QLGitHubRepository {
+public class QLGitHubRepository implements Parcelable {
     /**
      * The name of the repository.
      */
@@ -35,6 +38,19 @@ public class QLGitHubRepository {
      * a boolean flag indicating if this repository is a private one.
      */
     private boolean isPrivate;
+
+    private QLGitHubRepository(Parcel in) {
+        name = in.readString();
+        url = in.readString();
+        createdAt = in.readString();
+        description = in.readString();
+        primaryLanguage = new PrimaryLanguage(in.readString());
+        isPrivate = in.readInt() == 1;
+    }
+
+    public QLGitHubRepository() {
+
+    }
 
     public String getName() {
         return name;
@@ -92,8 +108,44 @@ public class QLGitHubRepository {
         isPrivate = aPrivate;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeString(url);
+        parcel.writeString(createdAt);
+        parcel.writeString(description);
+        parcel.writeString(license);
+        parcel.writeString(primaryLanguage.getName());
+        parcel.writeInt(isPrivate ? 1 : 0);
+    }
+
+    public static final Creator<QLGitHubRepository> CREATOR = new Creator<QLGitHubRepository>() {
+
+        @Override
+        public QLGitHubRepository createFromParcel(Parcel source) {
+            return new QLGitHubRepository(source);
+        }
+
+        @Override
+        public QLGitHubRepository[] newArray(int size) {
+            return new QLGitHubRepository[size];
+        }
+    };
+
     private class PrimaryLanguage {
         private String name;
+
+        public PrimaryLanguage() {
+        }
+
+        public PrimaryLanguage(String name) {
+            this.name = name;
+        }
 
         public String getName() {
             return name;
@@ -113,7 +165,7 @@ public class QLGitHubRepository {
 
     /**
      * @param repositories to be filtered
-     * @param query the query's text to be used for filtering
+     * @param query        the query's text to be used for filtering
      * @return the list of GitHub repositories whose names contain the given query text.
      */
     public static List<QLGitHubRepository> filter(List<QLGitHubRepository> repositories, String query) {
