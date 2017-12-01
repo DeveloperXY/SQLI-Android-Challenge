@@ -43,10 +43,16 @@ public class MainActivity extends AppCompatActivity {
                 "repository: node { name url createdAt description license primaryLanguage { name } isPrivate}}}}}";
 
         Call<QLGithubResponse> initialCall = callForGithubRepositories(query);
-        // Send a request for the first bulk of repositories
+        // Send an asynchronous request for the first bulk of repositories
+        // If there are more repositories to be fetched, this initial call will subsequently setup & execute
+        // other calls to fetch the rest
         initialCall.enqueue(new GetRepositoriesCallback());
     }
 
+    /**
+     * @param query to be used when making the call.
+     * @return a Call object resulting from the call to the GraphQLClient.
+     */
     private Call<QLGithubResponse> callForGithubRepositories(String query) {
         QLQuery qlQuery = new QLQuery(query);
         return graphQLClient.getAllRepositories(qlQuery);
