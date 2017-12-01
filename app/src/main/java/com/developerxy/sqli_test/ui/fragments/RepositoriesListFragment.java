@@ -4,6 +4,7 @@ package com.developerxy.sqli_test.ui.fragments;
 import android.app.Fragment;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,7 +13,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.developerxy.sqli_test.R;
@@ -36,6 +36,7 @@ public class RepositoriesListFragment extends Fragment implements OnRepositories
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
+    private Snackbar mSnackbar;
     /**
      * Switches between the RecyclerView & an empty view to be displayed in case the repositories' list was empty.
      */
@@ -64,7 +65,8 @@ public class RepositoriesListFragment extends Fragment implements OnRepositories
 
     @Override
     public void onLoadSucceeded(List<QLGitHubRepository> repositories) {
-        if (repositories.size() == 0) {
+        int nbrOfRepositories = repositories.size();
+        if (nbrOfRepositories == 0) {
             switch (viewSwitcher.getNextView().getId()) {
                 case R.id.empty_view:
                     viewSwitcher.showNext();
@@ -81,11 +83,26 @@ public class RepositoriesListFragment extends Fragment implements OnRepositories
         this.repositories = repositories;
         mSwipeRefreshLayout.setRefreshing(false);
         populateRecyclerView();
+
+        if (nbrOfRepositories != 0) {
+            Snackbar.make(getActivity().getWindow().getDecorView(),
+                    String.format("Displaying %d repositories.", nbrOfRepositories), Snackbar.LENGTH_LONG)
+                    .show();
+        }
     }
 
     @Override
     public void onLoadFailed(String errorMessage) {
-        Toast.makeText(getActivity(), "Loading failed: " + errorMessage, Toast.LENGTH_LONG).show();
+        mSwipeRefreshLayout.setRefreshing(false);
+        mSnackbar = Snackbar.make(getActivity().getWindow().getDecorView(), "Loading failed: " + errorMessage, Snackbar.LENGTH_INDEFINITE)
+                .setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        fetchRepostories(RepositoriesListFragment.this);
+                    }
+                });
+
+        mSnackbar.show();
     }
 
     private void initializeUI(View rootView) {
@@ -98,6 +115,8 @@ public class RepositoriesListFragment extends Fragment implements OnRepositories
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                if (mSnackbar != null && mSnackbar.isShown())
+                    mSnackbar.dismiss();
                 fetchRepostories(RepositoriesListFragment.this);
             }
         });
