@@ -19,14 +19,34 @@ import retrofit2.Response;
  * <p>A custom Retrofit callback class.</p>
  *
  * <p>
- *      Its methods will be invoked when as a result of an incoming response from the GitHub GraphQL API.<br/>
+ *      Its methods will be invoked as a result of an incoming response from the GitHub GraphQL API.<br/>
  *      It makes use of a List internally to accumulate the repositories that were fetched due to subsequent calls to the API
  *      (in case the total number of user repositories was higher than the default number of repositories retrieved per response).
  * </p>
  *
- * When this callback's is first invoked, it fetches the first chunk of repositories. If there are
- * more callbacks to be fetched, it creates a new Call by cloning the original Call (request) that was used to initiate
- * the first request in the first place, in order to initiate a new request.
+ * <p>
+ *     Suppose we have 65 repositories to be retrieved using the GitHub GraphQL API.
+ *     with a default Constants.NUMBER_OF_REPOSITORIES_PER_REQUEST value of 30, we will need to send 3 requests
+ *     to retrieve the full list.
+ *
+ *     The first Retrofit Call object is used to send the first request. When it finishes, it creates a new Call object using
+ *     the {@code RetrofitCallBuilder.callForGithubRepositories(query)} method. This new Call object, will
+ *     serve as a prototype to be cloned in order to create Call objects for the 2 requests to be sent afterwards.
+ *
+ *     For each of the 3 Calls created in total, a {@code FetchRepositoriesCallback} instance is queued.
+ * </p>
+ *
+ * <p>
+ *     Each callback is responsible of passing the following 3 elements to the next callback:
+ *     1. the prototype Call object
+ *     2. the list of repositories that were retrieved from the Call's response
+ *     3. the listener (the activity) to be notified when the final Call executes & finishes
+ * </p>
+ *
+ * <p>
+ *     This way, repositories are accumulated throughout the individual requests to form the final list to be communicated
+ *     to the registered listener.
+ * </p>
  */
 public class FetchRepositoriesCallback implements Callback<QLGitHubResponse> {
 

@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements OnRepositoriesLoa
     }
 
     /**
-     * Converting dp to pixel
+     * Convert dp to pixel
      */
     private int dpToPx(int dp) {
         Resources r = getResources();
