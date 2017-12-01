@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         fetchRepostories(new OnRepositoriesLoadedListener() {
             @Override
             public void onLoadSucceeded(List<QLGithubRepository> repositories) {
-                Toast.makeText(MainActivity.this, "Loading succeeded: " + repositories.size(), Toast.LENGTH_LONG).show();
+
             }
 
             @Override
