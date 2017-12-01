@@ -32,6 +32,7 @@
                 android:layout_alignTop="@id/github_logo"
                 android:layout_toRightOf="@id/github_logo"
                 android:gravity="center_vertical|left"
+                android:layout_marginLeft="16dp"
                 android:text="Comptable" />
 
         </RelativeLayout>
@@ -60,7 +61,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="30"
                     android:padding="8dp"
-                    android:text="URL:" />
+                    android:text="@string/url" />
 
                 <TextView
                     android:id="@+id/urlText"
@@ -87,7 +88,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="30"
                     android:padding="8dp"
-                    android:text="Created at:" />
+                    android:text="@string/created_at" />
 
                 <TextView
                     android:id="@+id/createAtText"
@@ -114,7 +115,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="30"
                     android:padding="8dp"
-                    android:text="Description:" />
+                    android:text="@string/desc" />
 
                 <TextView
                     android:id="@+id/descriptionText"
@@ -141,7 +142,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="30"
                     android:padding="8dp"
-                    android:text="License:" />
+                    android:text="@string/license" />
 
                 <TextView
                     android:id="@+id/licenseText"
@@ -168,7 +169,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="30"
                     android:padding="8dp"
-                    android:text="Primary language:" />
+                    android:text="@string/prim_language" />
 
                 <TextView
                     android:id="@+id/languageText"

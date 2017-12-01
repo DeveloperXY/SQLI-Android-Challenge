@@ -38,16 +38,16 @@ public class RepositoryDetailsFragment extends Fragment {
             urlText.setText(args.getString("url"));
 
             String dateString = args.getString("createdAt");
-            createdAtText.setText(DateUtils.parseTZ(dateString));
+            createdAtText.setText(DateUtils.parseTZ(getActivity(), dateString));
 
             String description = args.getString("description");
-            descriptionText.setText(description == null ? "No description available" : description);
+            descriptionText.setText(description == null ? getString(R.string.no_desc_available) : description);
 
             String license = args.getString("license");
-            licenseText.setText(license == null ? "No license" : license);
+            licenseText.setText(license == null ? getString(R.string.no_license) : license);
 
             String primaryLanguage = args.getString("primaryLang");
-            languageText.setText(primaryLanguage == null ? "Primary language info not available" : primaryLanguage);
+            languageText.setText(primaryLanguage == null ? getString(R.string.primary_lang_not_available) : primaryLanguage);
         }
 
         return view;

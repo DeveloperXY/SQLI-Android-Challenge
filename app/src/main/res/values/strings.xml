@@ -1,6 +1,16 @@
 <resources>
-    <string name="app_name">SQLi_test</string>
+    <string name="app_name">Test SQLi</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="invalid_date">Invalid date</string>
+    <string name="no_desc_available">No description available</string>
+    <string name="primary_lang_not_available">Primary language info not available</string>
+    <string name="no_license">No license</string>
+    <string name="loading_failed">Loading failed:</string>
+    <string name="url">URL:</string>
+    <string name="created_at">Created at:</string>
+    <string name="desc">Description:</string>
+    <string name="license">License:</string>
+    <string name="prim_language">Primary language:</string>
+    <string name="no_repos">No repositories to show.</string>
+    <string name="search">Search</string>
 </resources>
