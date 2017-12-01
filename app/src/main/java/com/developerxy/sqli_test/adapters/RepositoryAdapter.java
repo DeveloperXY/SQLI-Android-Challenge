@@ -28,6 +28,11 @@ public class RepositoryAdapter extends BaseSearchAdapter<RepositoryAdapter.ViewH
         return new ViewHolder(v);
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
     public class ViewHolder extends BinderViewHolder<QLGithubRepository> {
         private TextView repositoryName;
 
