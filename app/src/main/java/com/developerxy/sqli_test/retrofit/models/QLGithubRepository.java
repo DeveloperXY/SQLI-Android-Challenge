@@ -1,4 +1,4 @@
-package com.developerxy.sqli_test.models;
+package com.developerxy.sqli_test.retrofit.models;
 
 /**
  * Created by Mohammed Aouf ZOUAG on 12/1/2017.
@@ -11,6 +11,7 @@ public class QLGithubRepository {
     private String description;
     private String license;
     private PrimaryLanguage primaryLanguage;
+    private boolean isPrivate;
 
     public String getName() {
         return name;
@@ -60,6 +61,14 @@ public class QLGithubRepository {
         this.primaryLanguage = primaryLanguage;
     }
 
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
+    }
+
     private class PrimaryLanguage {
         private String name;
 
@@ -88,6 +97,7 @@ public class QLGithubRepository {
                 ", description='" + description + '\'' +
                 ", license='" + license + '\'' +
                 ", primaryLanguage=" + primaryLanguage +
+                ", isPrivate=" + isPrivate +
                 '}';
     }
 }
