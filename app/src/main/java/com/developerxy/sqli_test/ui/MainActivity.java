@@ -45,7 +45,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         if (!searchView.isIconified())
             searchView.setIconified(true);
         else {
-            super.onBackPressed();
+            // If the back button was pressed & the user is actually at the details fragment,
+            // send him back to the list fragment, else close the app
+            Fragment fragment = getFragmentManager().findFragmentById(R.id.frame_container);
+            if (fragment instanceof RepositoryDetailsFragment)
+                displayFragment(0);
+            else
+                super.onBackPressed();
         }
     }
 
