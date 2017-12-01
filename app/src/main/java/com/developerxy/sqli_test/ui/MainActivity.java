@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.widget.Toast;
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         fetchRepostories(new OnRepositoriesLoadedListener() {
             @Override
             public void onLoadSucceeded(List<QLGithubRepository> repositories) {
-                Toast.makeText(MainActivity.this, "Loading successded: " + repositories.size(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Loading succeeded: " + repositories.size(), Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(0), true));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
