@@ -16,7 +16,6 @@ import java.util.List;
 /**
  * Created by Mohammed Aouf ZOUAG on 12/1/2017.
  */
-
 public class RepositoryAdapter extends BaseSearchAdapter<RepositoryAdapter.ViewHolder, QLGithubRepository> {
 
     public RepositoryAdapter(Context context, List<QLGithubRepository> items) {
@@ -34,6 +33,7 @@ public class RepositoryAdapter extends BaseSearchAdapter<RepositoryAdapter.ViewH
 
         public ViewHolder(View itemView) {
             super(itemView);
+            repositoryName = itemView.findViewById(R.id.repo_name);
         }
 
         @Override

@@ -11,6 +11,7 @@ import android.util.TypedValue;
 import android.widget.Toast;
 
 import com.developerxy.sqli_test.R;
+import com.developerxy.sqli_test.adapters.RepositoryAdapter;
 import com.developerxy.sqli_test.application.GraphQLApplication;
 import com.developerxy.sqli_test.retrofit.RetrofitCallBuilder;
 import com.developerxy.sqli_test.retrofit.listeners.FetchRepositoriesCallback;
@@ -24,9 +25,9 @@ import java.util.List;
 
 import retrofit2.Call;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnRepositoriesLoadedListener {
 
-    private List<QLGithubRepository> repositories;
+    private RepositoryAdapter mRepositoryAdapter;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     protected RecyclerView mRecyclerView;
@@ -38,19 +39,10 @@ public class MainActivity extends AppCompatActivity {
         RetrofitCallBuilder.init(((GraphQLApplication) getApplication()));
 
         initializeUI(); // required UI setup
+        setupRefreshListener(); // configure the behavior of the SwipeRefreshLayout
         setupRecyclerView(); // setup the activity's recyclerview
         // start fetching repositories asynchronously using the Retrofit GraphQLClient that was setup
-        fetchRepostories(new OnRepositoriesLoadedListener() {
-            @Override
-            public void onLoadSucceeded(List<QLGithubRepository> repositories) {
-
-            }
-
-            @Override
-            public void onLoadFailed(String errorMessage) {
-                Toast.makeText(MainActivity.this, "Loading failed: " + errorMessage, Toast.LENGTH_LONG).show();
-            }
-        });
+        fetchRepostories(this); // Fetch repositories & notify the activity when finished
     }
 
     private void fetchRepostories(OnRepositoriesLoadedListener listener) {
@@ -70,11 +62,29 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recyclerView);
     }
 
+    private void setupRefreshListener() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchRepostories(MainActivity.this);
+            }
+        });
+    }
+
     private void setupRecyclerView() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(0), true));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    private void populateRecyclerView(List<QLGithubRepository> repositories) {
+        if (mRepositoryAdapter == null) {
+            mRepositoryAdapter = new RepositoryAdapter(this, repositories);
+            mRepositoryAdapter.setHasStableIds(true);
+            mRecyclerView.setAdapter(mRepositoryAdapter);
+        } else
+            mRepositoryAdapter.animateTo(repositories);
     }
 
     /**
@@ -83,5 +93,16 @@ public class MainActivity extends AppCompatActivity {
     private int dpToPx(int dp) {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+
+    @Override
+    public void onLoadSucceeded(List<QLGithubRepository> repositories) {
+        mSwipeRefreshLayout.setRefreshing(false);
+        populateRecyclerView(repositories);
+    }
+
+    @Override
+    public void onLoadFailed(String errorMessage) {
+        Toast.makeText(MainActivity.this, "Loading failed: " + errorMessage, Toast.LENGTH_LONG).show();
     }
 }

@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
- * Created by Mohammed Aouf ZOUAG on 29/05/2016.
+ * A custom ViewHolder.
  */
 public abstract class BinderViewHolder<T> extends RecyclerView.ViewHolder {
     public BinderViewHolder(View itemView) {

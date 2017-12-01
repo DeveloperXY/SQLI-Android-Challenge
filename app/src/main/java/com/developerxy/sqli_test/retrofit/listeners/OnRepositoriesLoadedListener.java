@@ -5,10 +5,20 @@ import com.developerxy.sqli_test.retrofit.models.QLGithubRepository;
 import java.util.List;
 
 /**
- * Created by Mohammed Aouf ZOUAG on 12/1/2017.
+ * A listener that notifies the implementer class of the result of loading GitHub repositories.
  */
-
 public interface OnRepositoriesLoadedListener {
+    /**
+     * This method is invoked if the loading of repositories was successful.
+     *
+     * @param repositories that were loaded
+     */
     void onLoadSucceeded(List<QLGithubRepository> repositories);
+
+    /**
+     * This method is invoked if the loading of repositories failed.
+     *
+     * @param errorMessage describing the error that happened.
+     */
     void onLoadFailed(String errorMessage);
 }

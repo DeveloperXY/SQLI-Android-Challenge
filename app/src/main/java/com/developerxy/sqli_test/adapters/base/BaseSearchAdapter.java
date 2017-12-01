@@ -5,8 +5,6 @@ import android.content.Context;
 import java.util.List;
 
 /**
- * Created by Mohammed Aouf ZOUAG on 27/05/2016.
- *
  * This adapter provides search functionality for the concerned RecyclerView.
  */
 public abstract class BaseSearchAdapter<T extends BinderViewHolder<U>, U>

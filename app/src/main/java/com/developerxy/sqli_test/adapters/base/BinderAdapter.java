@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Mohammed Aouf ZOUAG on 29/05/2016.
- *
  * This adapter provides basic binding for the concerned RecyclerView.
  *
  * U : the type of data the adapter will hold
