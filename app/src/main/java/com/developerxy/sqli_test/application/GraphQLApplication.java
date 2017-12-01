@@ -7,10 +7,6 @@ import com.developerxy.sqli_test.R;
 import com.developerxy.sqli_test.retrofit.GraphQLClient;
 import com.developerxy.sqli_test.retrofit.ServiceGenerator;
 
-/**
- * Created by Mohammed Aouf ZOUAG on 12/1/2017.
- */
-
 public class GraphQLApplication extends Application {
 
     private String accessToken;

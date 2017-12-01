@@ -15,10 +15,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by Mohammed Aouf ZOUAG on 12/1/2017.
- */
-
 public class FetchRepositoriesCallback implements Callback<QLGitHubResponse> {
 
     private List<QLGitHubRepository> accumulatedRepositories;
@@ -72,7 +68,7 @@ public class FetchRepositoriesCallback implements Callback<QLGitHubResponse> {
                     newCall = callBackup.clone();
                 }
 
-                // Send a request using a new Call object & keep passing a call backup for future calls
+                // Send a request using a new Call object & keep passing a call backup & the concerned listener for future calls
                 newCall.enqueue(new FetchRepositoriesCallback(callBackup, onRepositoriesLoadedListener, accumulatedRepositories));
             } else {
                 // There is no more data to fetch, this is the last call to be sent

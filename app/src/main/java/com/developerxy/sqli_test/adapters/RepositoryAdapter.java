@@ -13,9 +13,6 @@ import com.developerxy.sqli_test.retrofit.models.QLGitHubRepository;
 
 import java.util.List;
 
-/**
- * Created by Mohammed Aouf ZOUAG on 12/1/2017.
- */
 public class RepositoryAdapter extends BaseSearchAdapter<RepositoryAdapter.ViewHolder, QLGitHubRepository> {
 
     public RepositoryAdapter(Context context, List<QLGitHubRepository> items) {

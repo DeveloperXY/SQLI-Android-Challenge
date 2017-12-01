@@ -5,12 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
- * Created by Mohammed Aouf ZOUAG on 29/05/2016.
- * Copied from an old project:
- * <p>
- * <a>https://github.com/DeveloperXY/Comptable/blob/master/app/src/main/java/com/example/ismailamrani/comptable/utils/decorations/GridSpacingItemDecoration.java</a>
- * </p>
- * <p>
  * Creates spaces between the items of the concerned RecyclerView.
  */
 public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {

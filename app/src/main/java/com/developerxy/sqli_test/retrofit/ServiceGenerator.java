@@ -12,8 +12,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A utility class to configure & generate Retrofit clients.
- *
- * Created by Mohammed Aouf ZOUAG on 01/12/2017.
  */
 public class ServiceGenerator {
 

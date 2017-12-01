@@ -13,8 +13,6 @@ package com.developerxy.sqli_test.retrofit.models;
  *     "query": "the value of the query field of a QLQuery instance"
  * }
  * </h2>
- *
- * Created by Mohammed Aouf ZOUAG on 12/1/2017.
  */
 
 public class QLQuery {
