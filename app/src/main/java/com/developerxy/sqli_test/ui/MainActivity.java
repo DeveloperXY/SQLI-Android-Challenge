@@ -1,43 +1,23 @@
 package com.developerxy.sqli_test.ui;
 
-import android.content.res.Resources;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.developerxy.sqli_test.R;
-import com.developerxy.sqli_test.adapters.RepositoryAdapter;
 import com.developerxy.sqli_test.application.GraphQLApplication;
 import com.developerxy.sqli_test.retrofit.RetrofitCallBuilder;
-import com.developerxy.sqli_test.retrofit.listeners.FetchRepositoriesCallback;
-import com.developerxy.sqli_test.retrofit.listeners.OnRepositoriesLoadedListener;
-import com.developerxy.sqli_test.retrofit.models.QLGitHubRepository;
-import com.developerxy.sqli_test.retrofit.models.QLGitHubResponse;
-import com.developerxy.sqli_test.utils.Constants;
-import com.developerxy.sqli_test.utils.GridSpacingItemDecoration;
+import com.developerxy.sqli_test.ui.fragments.RepositoriesListFragment;
 
-import java.util.List;
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
-import retrofit2.Call;
-
-public class MainActivity extends AppCompatActivity implements OnRepositoriesLoadedListener,
-        SearchView.OnQueryTextListener {
-
-    private List<QLGitHubRepository> repositories;
-    private RepositoryAdapter mRepositoryAdapter;
-
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private SearchView searchView;
-    protected RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +25,7 @@ public class MainActivity extends AppCompatActivity implements OnRepositoriesLoa
         setContentView(R.layout.activity_main);
         RetrofitCallBuilder.init(((GraphQLApplication) getApplication()));
 
-        initializeUI(); // required UI setup
-        setupRecyclerView(); // setup the activity's recyclerview
-        setupRefreshListener(); // configure the behavior of the SwipeRefreshLayout
-        // start fetching repositories asynchronously using the Retrofit GraphQLClient that was setup
-        // and notify this activity when finished
-        fetchRepostories(this);
+        displayFragment(0); // Display the first fragment at startup
     }
 
     @Override
@@ -66,69 +41,9 @@ public class MainActivity extends AppCompatActivity implements OnRepositoriesLoa
     public void onBackPressed() {
         if (!searchView.isIconified())
             searchView.setIconified(true);
-        else
+        else {
             super.onBackPressed();
-    }
-
-    private void fetchRepostories(OnRepositoriesLoadedListener listener) {
-        String query = "{viewer {username: login repositories(first: " + Constants.NUMBER_OF_REPOSITORIES_PER_REQUEST +
-                ") { pageInfo { hasNextPage endCursor } items: edges { " +
-                "repository: node { name url createdAt description license primaryLanguage { name } isPrivate}}}}}";
-
-        Call<QLGitHubResponse> initialCall = RetrofitCallBuilder.callForGithubRepositories(query);
-        // Send an asynchronous request for the first bulk of repositories
-        // If there are more repositories to be fetched, this initial call will subsequently setup & execute
-        // other calls to fetch the rest
-        initialCall.enqueue(new FetchRepositoriesCallback(listener));
-    }
-
-    private void initializeUI() {
-        mSwipeRefreshLayout = findViewById(R.id.swipe_refresh);
-        mRecyclerView = findViewById(R.id.recyclerView);
-    }
-
-    private void setupRefreshListener() {
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                fetchRepostories(MainActivity.this);
-            }
-        });
-    }
-
-    private void setupRecyclerView() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(0), true));
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-    }
-
-    private void populateRecyclerView() {
-        if (mRepositoryAdapter == null) {
-            mRepositoryAdapter = new RepositoryAdapter(this, repositories);
-            mRecyclerView.setAdapter(mRepositoryAdapter);
-        } else
-            mRepositoryAdapter.animateTo(repositories);
-    }
-
-    /**
-     * Convert dp to pixel
-     */
-    private int dpToPx(int dp) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
-    }
-
-    @Override
-    public void onLoadSucceeded(List<QLGitHubRepository> repositories) {
-        this.repositories = repositories;
-        mSwipeRefreshLayout.setRefreshing(false);
-        populateRecyclerView();
-    }
-
-    @Override
-    public void onLoadFailed(String errorMessage) {
-        Toast.makeText(MainActivity.this, "Loading failed: " + errorMessage, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -138,9 +53,24 @@ public class MainActivity extends AppCompatActivity implements OnRepositoriesLoa
 
     @Override
     public boolean onQueryTextChange(String query) {
-        final List<QLGitHubRepository> filteredRepos = QLGitHubRepository.filter(repositories, query);
-        mRepositoryAdapter.animateTo(filteredRepos);
-        mRecyclerView.scrollToPosition(0);
-        return true;
+        // Notify the repositories fragment that the content of the SearchView has changed
+        return ((RepositoriesListFragment) getFragmentManager().findFragmentById(R.id.frame_container))
+                .onSearchQueryChanged(query);
+    }
+
+    private void displayFragment(int position) {
+        Fragment fragment = null;
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+
+        switch (position) {
+            case 0:
+                fragment = RepositoriesListFragment.newInstance();
+                ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
+                break;
+        }
+
+        ft.replace(R.id.frame_container, fragment, "fragment" + position);
+        ft.commit();
     }
 }
