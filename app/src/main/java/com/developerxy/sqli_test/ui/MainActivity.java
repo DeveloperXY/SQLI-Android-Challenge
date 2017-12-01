@@ -13,7 +13,9 @@ import android.view.MenuItem;
 import com.developerxy.sqli_test.R;
 import com.developerxy.sqli_test.application.GraphQLApplication;
 import com.developerxy.sqli_test.retrofit.RetrofitCallBuilder;
+import com.developerxy.sqli_test.retrofit.models.QLGitHubRepository;
 import com.developerxy.sqli_test.ui.fragments.RepositoriesListFragment;
+import com.developerxy.sqli_test.ui.fragments.RepositoryDetailsFragment;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
@@ -59,6 +61,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     private void displayFragment(int position) {
+        displayFragment(position, null);
+    }
+
+    private void displayFragment(int position, QLGitHubRepository repository) {
         Fragment fragment = null;
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
@@ -67,6 +73,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             case 0:
                 fragment = RepositoriesListFragment.newInstance();
                 ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
+                break;
+            case 1:
+                fragment = RepositoryDetailsFragment.newInstance(repository);
+                ft.setCustomAnimations(R.animator.slide_in_right, R.animator.slide_out_left);
                 break;
         }
 

@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -137,7 +138,7 @@ public class QLGitHubRepository implements Parcelable {
         }
     };
 
-    private class PrimaryLanguage {
+    public class PrimaryLanguage {
         private String name;
 
         public PrimaryLanguage() {
@@ -178,6 +179,23 @@ public class QLGitHubRepository implements Parcelable {
         }
 
         return filteredRepos;
+    }
+
+    /**
+     * This method removes the private repositories among those that were passed in to the method.
+     *
+     * @param repositories to filter
+     * @return a list of the public repositories among the {@code repositories} list.
+     */
+    public static List<QLGitHubRepository> eliminatePrivateRepositories(List<QLGitHubRepository> repositories) {
+        for (Iterator<QLGitHubRepository> iterator = repositories.iterator();
+                iterator.hasNext();) {
+            QLGitHubRepository repository = iterator.next();
+            if (repository.isPrivate())
+                iterator.remove();
+        }
+
+        return repositories;
     }
 
     @Override

@@ -64,8 +64,11 @@ public class RepositoriesListFragment extends Fragment implements OnRepositories
     }
 
     @Override
-    public void onLoadSucceeded(List<QLGitHubRepository> repositories) {
+    public void onLoadSucceeded(List<QLGitHubRepository> repos) {
+        // Extract the public repositories only
+        repositories = QLGitHubRepository.eliminatePrivateRepositories(repos);
         int nbrOfRepositories = repositories.size();
+
         if (nbrOfRepositories == 0) {
             switch (viewSwitcher.getNextView().getId()) {
                 case R.id.empty_view:
@@ -80,13 +83,12 @@ public class RepositoriesListFragment extends Fragment implements OnRepositories
             }
         }
 
-        this.repositories = repositories;
         mSwipeRefreshLayout.setRefreshing(false);
         populateRecyclerView();
 
         if (nbrOfRepositories != 0) {
             Snackbar.make(getActivity().getWindow().getDecorView(),
-                    String.format("Displaying %d repositories.", nbrOfRepositories), Snackbar.LENGTH_LONG)
+                    String.format("Displaying %d public repositories.", nbrOfRepositories), Snackbar.LENGTH_LONG)
                     .show();
         }
     }
