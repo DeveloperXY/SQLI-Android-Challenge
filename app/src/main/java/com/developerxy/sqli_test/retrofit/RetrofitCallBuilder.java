@@ -1,7 +1,7 @@
 package com.developerxy.sqli_test.retrofit;
 
 import com.developerxy.sqli_test.application.GraphQLApplication;
-import com.developerxy.sqli_test.retrofit.models.QLGithubResponse;
+import com.developerxy.sqli_test.retrofit.models.QLGitHubResponse;
 import com.developerxy.sqli_test.retrofit.models.QLQuery;
 
 import retrofit2.Call;
@@ -24,7 +24,7 @@ public class RetrofitCallBuilder {
         mGraphQLClient = mApplication.getGraphQLClient();
     }
 
-    public static Call<QLGithubResponse> callForGithubRepositories(String query) {
+    public static Call<QLGitHubResponse> callForGithubRepositories(String query) {
         if (mApplication == null)
             throw new IllegalStateException("You need to call RetrofitCallBuilder.init() before using the rest of the API.");
 

@@ -3,8 +3,8 @@ package com.developerxy.sqli_test.retrofit.listeners;
 import android.util.Log;
 
 import com.developerxy.sqli_test.retrofit.RetrofitCallBuilder;
-import com.developerxy.sqli_test.retrofit.models.QLGithubRepository;
-import com.developerxy.sqli_test.retrofit.models.QLGithubResponse;
+import com.developerxy.sqli_test.retrofit.models.QLGitHubRepository;
+import com.developerxy.sqli_test.retrofit.models.QLGitHubResponse;
 import com.developerxy.sqli_test.retrofit.models.QLPageInfo;
 import com.developerxy.sqli_test.utils.Constants;
 
@@ -19,10 +19,10 @@ import retrofit2.Response;
  * Created by Mohammed Aouf ZOUAG on 12/1/2017.
  */
 
-public class FetchRepositoriesCallback implements Callback<QLGithubResponse> {
+public class FetchRepositoriesCallback implements Callback<QLGitHubResponse> {
 
-    private List<QLGithubRepository> accumulatedRepositories;
-    private Call<QLGithubResponse> callBackup;
+    private List<QLGitHubRepository> accumulatedRepositories;
+    private Call<QLGitHubResponse> callBackup;
     private OnRepositoriesLoadedListener onRepositoriesLoadedListener;
 
     public FetchRepositoriesCallback() {
@@ -34,17 +34,17 @@ public class FetchRepositoriesCallback implements Callback<QLGithubResponse> {
         this.onRepositoriesLoadedListener = onRepositoriesLoadedListener;
     }
 
-    public FetchRepositoriesCallback(Call<QLGithubResponse> callBackup,
+    public FetchRepositoriesCallback(Call<QLGitHubResponse> callBackup,
                                      OnRepositoriesLoadedListener onRepositoriesLoadedListener,
-                                     List<QLGithubRepository> repositories) {
+                                     List<QLGitHubRepository> repositories) {
         this.onRepositoriesLoadedListener = onRepositoriesLoadedListener;
         this.callBackup = callBackup;
         this.accumulatedRepositories = repositories;
     }
 
     @Override
-    public void onResponse(Call<QLGithubResponse> call, Response<QLGithubResponse> res) {
-        QLGithubResponse response = res.body();
+    public void onResponse(Call<QLGitHubResponse> call, Response<QLGitHubResponse> res) {
+        QLGitHubResponse response = res.body();
         if (response != null) {
             // Get a bulk of repositories from the current response
             accumulatedRepositories.addAll(response.extractRepositories());
@@ -54,7 +54,7 @@ public class FetchRepositoriesCallback implements Callback<QLGithubResponse> {
             if (pageInfo.hasNextPage()) {
                 // Request the next page of data from the API using the provided end cursor
                 String endCursor = pageInfo.getEndCursor();
-                Call<QLGithubResponse> newCall;
+                Call<QLGitHubResponse> newCall;
 
                 if (callBackup == null) {
                     // The first bulk of repositories was fetched, but we need to send a new request
@@ -86,7 +86,7 @@ public class FetchRepositoriesCallback implements Callback<QLGithubResponse> {
     }
 
     @Override
-    public void onFailure(Call<QLGithubResponse> call, Throwable t) {
+    public void onFailure(Call<QLGitHubResponse> call, Throwable t) {
         // Notify the activity that the loading failed
         onRepositoriesLoadedListener.onLoadFailed("Cannot connect to server.");
     }

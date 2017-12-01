@@ -1,6 +1,6 @@
 package com.developerxy.sqli_test.retrofit.listeners;
 
-import com.developerxy.sqli_test.retrofit.models.QLGithubRepository;
+import com.developerxy.sqli_test.retrofit.models.QLGitHubRepository;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface OnRepositoriesLoadedListener {
      *
      * @param repositories that were loaded
      */
-    void onLoadSucceeded(List<QLGithubRepository> repositories);
+    void onLoadSucceeded(List<QLGitHubRepository> repositories);
 
     /**
      * This method is invoked if the loading of repositories failed.

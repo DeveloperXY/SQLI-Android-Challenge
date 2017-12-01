@@ -20,8 +20,8 @@ import com.developerxy.sqli_test.application.GraphQLApplication;
 import com.developerxy.sqli_test.retrofit.RetrofitCallBuilder;
 import com.developerxy.sqli_test.retrofit.listeners.FetchRepositoriesCallback;
 import com.developerxy.sqli_test.retrofit.listeners.OnRepositoriesLoadedListener;
-import com.developerxy.sqli_test.retrofit.models.QLGithubRepository;
-import com.developerxy.sqli_test.retrofit.models.QLGithubResponse;
+import com.developerxy.sqli_test.retrofit.models.QLGitHubRepository;
+import com.developerxy.sqli_test.retrofit.models.QLGitHubResponse;
 import com.developerxy.sqli_test.utils.Constants;
 import com.developerxy.sqli_test.utils.GridSpacingItemDecoration;
 
@@ -32,7 +32,7 @@ import retrofit2.Call;
 public class MainActivity extends AppCompatActivity implements OnRepositoriesLoadedListener,
         SearchView.OnQueryTextListener {
 
-    private List<QLGithubRepository> repositories;
+    private List<QLGitHubRepository> repositories;
     private RepositoryAdapter mRepositoryAdapter;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -49,7 +49,8 @@ public class MainActivity extends AppCompatActivity implements OnRepositoriesLoa
         setupRecyclerView(); // setup the activity's recyclerview
         setupRefreshListener(); // configure the behavior of the SwipeRefreshLayout
         // start fetching repositories asynchronously using the Retrofit GraphQLClient that was setup
-        fetchRepostories(this); // Fetch repositories & notify the activity when finished
+        // and notify this activity when finished
+        fetchRepostories(this);
     }
 
     @Override
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnRepositoriesLoa
                 ") { pageInfo { hasNextPage endCursor } items: edges { " +
                 "repository: node { name url createdAt description license primaryLanguage { name } isPrivate}}}}}";
 
-        Call<QLGithubResponse> initialCall = RetrofitCallBuilder.callForGithubRepositories(query);
+        Call<QLGitHubResponse> initialCall = RetrofitCallBuilder.callForGithubRepositories(query);
         // Send an asynchronous request for the first bulk of repositories
         // If there are more repositories to be fetched, this initial call will subsequently setup & execute
         // other calls to fetch the rest
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements OnRepositoriesLoa
     }
 
     @Override
-    public void onLoadSucceeded(List<QLGithubRepository> repositories) {
+    public void onLoadSucceeded(List<QLGitHubRepository> repositories) {
         this.repositories = repositories;
         mSwipeRefreshLayout.setRefreshing(false);
         populateRecyclerView();
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements OnRepositoriesLoa
 
     @Override
     public boolean onQueryTextChange(String query) {
-        final List<QLGithubRepository> filteredRepos = QLGithubRepository.filter(repositories, query);
+        final List<QLGitHubRepository> filteredRepos = QLGitHubRepository.filter(repositories, query);
         mRepositoryAdapter.animateTo(filteredRepos);
         mRecyclerView.scrollToPosition(0);
         return true;

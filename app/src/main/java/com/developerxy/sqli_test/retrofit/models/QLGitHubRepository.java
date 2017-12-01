@@ -7,7 +7,7 @@ import java.util.List;
  * Created by Mohammed Aouf ZOUAG on 12/1/2017.
  */
 
-public class QLGithubRepository {
+public class QLGitHubRepository {
     private String name;
     private String url;
     private String createdAt;
@@ -96,11 +96,11 @@ public class QLGithubRepository {
      * @param query the query's text to be used for filtering
      * @return the list of GitHub repositories whose names contain the given query text.
      */
-    public static List<QLGithubRepository> filter(List<QLGithubRepository> repositories, String query) {
-        List<QLGithubRepository> toFilterRepos = new ArrayList<>(repositories);
-        List<QLGithubRepository> filteredRepos = new ArrayList<>();
+    public static List<QLGitHubRepository> filter(List<QLGitHubRepository> repositories, String query) {
+        List<QLGitHubRepository> toFilterRepos = new ArrayList<>(repositories);
+        List<QLGitHubRepository> filteredRepos = new ArrayList<>();
         for (int i = 0; i < toFilterRepos.size(); i++) {
-            QLGithubRepository repository = toFilterRepos.get(i);
+            QLGitHubRepository repository = toFilterRepos.get(i);
             if (repository.getName().toLowerCase().contains(query.toLowerCase()))
                 filteredRepos.add(repository);
         }
@@ -110,7 +110,7 @@ public class QLGithubRepository {
 
     @Override
     public String toString() {
-        return "QLGithubRepository{" +
+        return "QLGitHubRepository{" +
                 "name='" + name + '\'' +
                 ", url='" + url + '\'' +
                 ", createdAt='" + createdAt + '\'' +

@@ -9,16 +9,16 @@ import android.widget.TextView;
 import com.developerxy.sqli_test.R;
 import com.developerxy.sqli_test.adapters.base.BaseSearchAdapter;
 import com.developerxy.sqli_test.adapters.base.BinderViewHolder;
-import com.developerxy.sqli_test.retrofit.models.QLGithubRepository;
+import com.developerxy.sqli_test.retrofit.models.QLGitHubRepository;
 
 import java.util.List;
 
 /**
  * Created by Mohammed Aouf ZOUAG on 12/1/2017.
  */
-public class RepositoryAdapter extends BaseSearchAdapter<RepositoryAdapter.ViewHolder, QLGithubRepository> {
+public class RepositoryAdapter extends BaseSearchAdapter<RepositoryAdapter.ViewHolder, QLGitHubRepository> {
 
-    public RepositoryAdapter(Context context, List<QLGithubRepository> items) {
+    public RepositoryAdapter(Context context, List<QLGitHubRepository> items) {
         super(context, items);
     }
 
@@ -33,7 +33,7 @@ public class RepositoryAdapter extends BaseSearchAdapter<RepositoryAdapter.ViewH
         return position;
     }
 
-    public class ViewHolder extends BinderViewHolder<QLGithubRepository> {
+    public class ViewHolder extends BinderViewHolder<QLGitHubRepository> {
         private TextView repositoryName;
 
         public ViewHolder(View itemView) {
@@ -42,7 +42,7 @@ public class RepositoryAdapter extends BaseSearchAdapter<RepositoryAdapter.ViewH
         }
 
         @Override
-        public void bind(QLGithubRepository repository) {
+        public void bind(QLGitHubRepository repository) {
             repositoryName.setText(repository.getName());
         }
     }
