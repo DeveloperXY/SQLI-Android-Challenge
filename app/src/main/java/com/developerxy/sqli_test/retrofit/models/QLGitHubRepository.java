@@ -3,13 +3,37 @@ package com.developerxy.sqli_test.retrofit.models;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class among the hierarchy of classes required by Retrofit to automatically convert a JSON response to a QLGitHubResponse object.
+ */
 public class QLGitHubRepository {
+    /**
+     * The name of the repository.
+     */
     private String name;
+    /**
+     * The URL of the repository.
+     */
     private String url;
+    /**
+     * The creation date of this repository.
+     */
     private String createdAt;
+    /**
+     * A description of this repository.
+     */
     private String description;
+    /**
+     * The license attributed to this repository.
+     */
     private String license;
+    /**
+     * The primary language that was used in this repository.
+     */
     private PrimaryLanguage primaryLanguage;
+    /**
+     * a boolean flag indicating if this repository is a private one.
+     */
     private boolean isPrivate;
 
     public String getName() {

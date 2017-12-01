@@ -6,6 +6,9 @@ import com.developerxy.sqli_test.retrofit.models.QLQuery;
 
 import retrofit2.Call;
 
+/**
+ * A helper class that builds Retrofit Call objects based on different GraphQL queries.
+ */
 public class RetrofitCallBuilder {
 
     private static GraphQLClient mGraphQLClient;
@@ -20,6 +23,13 @@ public class RetrofitCallBuilder {
         mGraphQLClient = mApplication.getGraphQLClient();
     }
 
+    /**
+     * This method constructs a QLQuery based on the passed in String query, & uses it to pass the query data
+     * to the request body before sending it.
+     *
+     * @param query to be executed
+     * @return a Retrofit Call object wrapping the GraphQL API's response after executing the passed in query.
+     */
     public static Call<QLGitHubResponse> callForGithubRepositories(String query) {
         if (mApplication == null)
             throw new IllegalStateException("You need to call RetrofitCallBuilder.init() before using the rest of the API.");
