@@ -8,7 +8,7 @@ public class QLPageInfo {
     private boolean hasNextPage;
     private String endCursor;
 
-    public boolean isHasNextPage() {
+    public boolean hasNextPage() {
         return hasNextPage;
     }
 

@@ -10,8 +10,10 @@ import com.developerxy.sqli_test.retrofit.GraphQLClient;
 import com.developerxy.sqli_test.retrofit.ServiceGenerator;
 import com.developerxy.sqli_test.retrofit.models.QLGithubRepository;
 import com.developerxy.sqli_test.retrofit.models.QLGithubResponse;
+import com.developerxy.sqli_test.retrofit.models.QLPageInfo;
 import com.developerxy.sqli_test.retrofit.models.QLQuery;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -20,40 +22,93 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int NUMBER_OF_REPOSITORIES_PER_REQUEST = 30;
+
+    private String accessToken;
     private List<QLGithubRepository> repositories;
+    private GraphQLClient graphQLClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String query = "{viewer {username: login repositories(first: 30) { pageInfo { hasNextPage endCursor } items: edges { " +
+        repositories = new ArrayList<>();
+        accessToken = getResources().getString(R.string.github_token);
+        graphQLClient = ServiceGenerator.createService(GraphQLClient.class, accessToken);
+        Log.e("GitHub Personal Token", accessToken);
+
+        String query = "{viewer {username: login repositories(first: " + NUMBER_OF_REPOSITORIES_PER_REQUEST +
+                ") { pageInfo { hasNextPage endCursor } items: edges { " +
                 "repository: node { name url createdAt description license primaryLanguage { name } isPrivate}}}}}";
+
+        Call<QLGithubResponse> initialCall = callForGithubRepositories(query);
+        // Send a request for the first bulk of repositories
+        initialCall.enqueue(new GetRepositoriesCallback());
+    }
+
+    private Call<QLGithubResponse> callForGithubRepositories(String query) {
         QLQuery qlQuery = new QLQuery(query);
-        System.out.println(qlQuery);
+        return graphQLClient.getAllRepositories(qlQuery);
+    }
 
-        String access_token = getResources().getString(R.string.github_token);
-        Log.e("GitHub Personal Token", access_token);
+    class GetRepositoriesCallback implements Callback<QLGithubResponse> {
 
-        GraphQLClient client = ServiceGenerator.createService(GraphQLClient.class, access_token);
-        client.getAllRepositories(qlQuery)
-                .enqueue(new Callback<QLGithubResponse>() {
-                    @Override
-                    public void onResponse(Call<QLGithubResponse> call, Response<QLGithubResponse> res) {
-                        QLGithubResponse response = res.body();
-                        if (response != null) {
-                            repositories = response.extractRepositories();
-                            Log.i("GraphQLClient", String.format("Retrieved %d repositories.", repositories.size()));
-                        } else {
-                            Log.i("GraphQLClient", "GitHub response is null.");
-                        }
+        private Call<QLGithubResponse> callBackup;
+
+        public GetRepositoriesCallback() {
+        }
+
+        public GetRepositoriesCallback(Call<QLGithubResponse> callBackup) {
+            this.callBackup = callBackup;
+        }
+
+        @Override
+        public void onResponse(Call<QLGithubResponse> call, Response<QLGithubResponse> res) {
+            QLGithubResponse response = res.body();
+            if (response != null) {
+                // Get a bulk of repositories from the current response
+                repositories.addAll(response.extractRepositories());
+
+                // Get pagination information about the current response
+                QLPageInfo pageInfo = response.getPaginationInfo();
+                if (pageInfo.hasNextPage()) {
+                    // Request the next page of data from the API using the provided end cursor
+                    String endCursor = pageInfo.getEndCursor();
+                    Call<QLGithubResponse> newCall;
+
+                    if (callBackup == null) {
+                        // The first bulk of repositories was fetched, but we need to send a new request
+                        // using a new Call object & a new query that specifies the end cursor
+
+                        String query = "{viewer {username: login repositories(first: " + NUMBER_OF_REPOSITORIES_PER_REQUEST +
+                                ", after: \"" + endCursor + "\") { pageInfo { hasNextPage endCursor } items: edges { " +
+                                "repository: node { name url createdAt description license primaryLanguage { name } isPrivate}}}}}";
+                        newCall = callForGithubRepositories(query);
+                        // Create a backup of this call for future calls, if needed
+                        callBackup = newCall.clone();
+                    } else {
+                        // A call backup was already passed to this Callback instance, re-use it to create a new
+                        // Call object instead of calling callForGithubRepositories()
+                        newCall = callBackup.clone();
                     }
 
-                    @Override
-                    public void onFailure(Call<QLGithubResponse> call, Throwable t) {
-                        System.out.println("Server error: " + t.getMessage());
-                        Toast.makeText(MainActivity.this, "Server error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    // Send a request using a new Call object & keep passing a call backup for future calls
+                    newCall.enqueue(new GetRepositoriesCallback(callBackup));
+                }
+                else {
+                    // There is no more data to fetch, this is the last call to be sent
+                    Log.i("GraphQLClient", String.format("Retrieved %d repositories.", repositories.size()));
+                }
+
+            } else {
+                Log.i("GraphQLClient", "GitHub response is null.");
+            }
+        }
+
+        @Override
+        public void onFailure(Call<QLGithubResponse> call, Throwable t) {
+            Toast.makeText(MainActivity.this, "Cannot connect to server.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

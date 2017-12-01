@@ -29,4 +29,13 @@ public class QLGithubResponse {
 
         return repositories;
     }
+
+    /**
+     * @return pagination information about the current response data.
+     */
+    public QLPageInfo getPaginationInfo() {
+        return data.getViewer()
+                .getRepositories()
+                .getPageInfo();
+    }
 }
