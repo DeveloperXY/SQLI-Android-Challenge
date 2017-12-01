@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String query = "{viewer {username: login repositories(first: 30) { items: edges { " +
+        String query = "{viewer {username: login repositories(first: 30) { pageInfo { hasNextPage endCursor } items: edges { " +
                 "repository: node { name url createdAt description license primaryLanguage { name } isPrivate}}}}}";
         QLQuery qlQuery = new QLQuery(query);
         System.out.println(qlQuery);

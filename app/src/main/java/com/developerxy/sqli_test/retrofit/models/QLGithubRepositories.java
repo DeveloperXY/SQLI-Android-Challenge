@@ -8,7 +8,12 @@ import java.util.List;
 
 public class QLGithubRepositories {
 
+    private QLPageInfo pageInfo;
     private List<QLGithubItem> items;
+
+    public QLPageInfo getPageInfo() {
+        return pageInfo;
+    }
 
     public List<QLGithubItem> getItems() {
         return items;
