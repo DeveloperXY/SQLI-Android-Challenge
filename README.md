@@ -1,4 +1,4 @@
-# SQLi_test
+# SQLi Android Challenge 2018
 
 The 12 hours Android challenge that got me an internship at SQLI Rabat.
 
